@@ -2,6 +2,7 @@
 import numpy as np
 import csv
 import itertools, functools, operator
+import matplotlib.pyplot as plt
 
 # Takes a list of numbers and returns a column vector:  n x 1
 def cv(value_list):
@@ -166,7 +167,7 @@ def d_mean_square_loss_th(x, y, th, th0):
     
     return np.mean(d_square_loss_th(x, y, th, th0), axis = 1, keepdims = True)
 
-print(d_mean_square_loss_th(X[:,0:1], Y[:,0:1], th, th0).tolist())
+#print(d_mean_square_loss_th(X[:,0:1], Y[:,0:1], th, th0).tolist())
 
 def d_lin_reg_th0(x, th, th0):
     """ Returns the gradient of lin_reg(x, th, th0) with respect to th0.
@@ -176,8 +177,9 @@ def d_lin_reg_th0(x, th, th0):
     >>> d_lin_reg_th0(x, th, th0).tolist()
     [[1.0, 1.0, 1.0, 1.0]]
     """
-    #Your code here
-    pass
+    return np.ones((1,x.shape[1]))
+
+print(d_lin_reg_th0(X, th, th0))
 
 def d_square_loss_th0(x, y, th, th0):
     """ Returns the gradient of square_loss(x, y, th, th0) with
@@ -191,8 +193,7 @@ def d_square_loss_th0(x, y, th, th0):
     >>> d_square_loss_th0(X, Y, th, th0).tolist()
     [[4.1, 3.6999999999999993, 4.5, 3.9000000000000004]]
     """
-    #Your code here
-    pass
+    return -2*(y - lin_reg(x, th, th0))
 
 def d_mean_square_loss_th0(x, y, th, th0):
     """ Returns the gradient of mean_square_loss(x, y, th, th0) with
@@ -204,8 +205,7 @@ def d_mean_square_loss_th0(x, y, th, th0):
     >>> d_mean_square_loss_th0(X, Y, th, th0).tolist()
     [[4.05]]
     """
-    #Your code here
-    pass
+    return np.mean(d_square_loss_th0(x, y, th, th0), axis = 1, keepdims = True)
 
 def d_ridge_obj_th(x, y, th, th0, lam):
     """Return the derivative of tghe ridge objective value with respect
@@ -223,8 +223,7 @@ def d_ridge_obj_th(x, y, th, th0, lam):
     >>> d_ridge_obj_th(X, Y, th, th0, 100.).tolist()
     [[210.15], [14.05]]
     """
-    #Your code here
-    pass
+    return d_mean_square_loss_th(x, y, th, th0) + 2*lam * th
 
 def d_ridge_obj_th0(x, y, th, th0, lam):
     """Return the derivative of tghe ridge objective value with respect
@@ -242,8 +241,7 @@ def d_ridge_obj_th0(x, y, th, th0, lam):
     >>> d_ridge_obj_th0(X, Y, th, th0, 100.).tolist()
     [[4.05]]
     """
-    #Your code here
-    pass
+    return d_mean_square_loss_th0(x, y, th, th0)
 
 #Concatenates the gradients with respect to theta and theta_0
 def ridge_obj_grad(x, y, th, th0, lam):
@@ -310,6 +308,8 @@ def sgdTest():
         return X, y
     
     X, y = downwards_line()
+    
+    
     
     def J(Xi, yi, w):
         # translate from (1-augmented X, y, theta) to (separated X, y, th, th0) format
