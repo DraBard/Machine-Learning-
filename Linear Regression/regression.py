@@ -96,8 +96,24 @@ def d_lin_reg_th(x, th, th0):
     >>> d_lin_reg_th(X, th, th0).tolist()
     [[1.0, 2.0, 3.0, 4.0], [1.0, 1.0, 1.0, 1.0]]
     """
-    #Your code here
-    pass
+    return x
+
+
+
+
+
+X = np.array([[ 1.,  2.,  3.,  4.], [ 1.,  1.,  1.,  1.]])
+th = np.array([[ 1.  ], [ 0.05]])
+th0 = np.array([[ 2.]])
+  
+#print(lin_reg(X, th, th0).tolist())
+ 
+d_lin_reg_th(X[:,0:1], th, th0).tolist()
+
+#print(d_lin_reg_th(X, th, th0).tolist())
+
+
+
 
 def d_square_loss_th(x, y, th, th0):
     """Returns the gradient of square_loss(x, y, th, th0) with respect to
@@ -121,8 +137,13 @@ def d_square_loss_th(x, y, th, th0):
     [[4.1, 7.399999999999999, 13.5, 15.600000000000001], [4.1, 3.6999999999999993, 4.5, 3.9000000000000004]]
 
     """
-    #Your code here
-    pass
+    return -2*(y - lin_reg(x, th, th0))*d_lin_reg_th(x, th, th0)
+
+
+
+Y = np.array([[ 1. ,  2.2,  2.8,  4.1]])
+
+#print(d_square_loss_th(X[:,0:1], Y[:,0:1], th, th0).tolist())
 
 def d_mean_square_loss_th(x, y, th, th0):
     """ Returns the gradient of mean_square_loss(x, y, th, th0) with
@@ -142,8 +163,10 @@ def d_mean_square_loss_th(x, y, th, th0):
     # print("X =", repr(X))
     # print("Y =", repr(Y))
     # print("th =", repr(th), "th0 =", repr(th0))
-    #Your code here
-    pass
+    
+    return np.mean(d_square_loss_th(x, y, th, th0), axis = 1, keepdims = True)
+
+print(d_mean_square_loss_th(X[:,0:1], Y[:,0:1], th, th0).tolist())
 
 def d_lin_reg_th0(x, th, th0):
     """ Returns the gradient of lin_reg(x, th, th0) with respect to th0.
