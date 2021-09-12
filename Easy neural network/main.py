@@ -82,5 +82,30 @@ def vector_function(x, y):
 
     
 C = np.random.random([1,6]) * 5
-print(C)
-print(vector_function(C, 3))
+# print(C)
+# print(vector_function(C, 3))
+
+import matplotlib.pyplot as plt
+
+x = np.linspace(0, 5)
+print(x)
+y = x ** 2
+
+fig = plt.figure()
+
+axes = fig.add_axes([1, 1, 1, 1]) # left, bottom, width, height (range 0 to 1)
+
+axes.plot(x, y, 'b--')
+
+axes.set_xlabel('x')
+axes.set_ylabel('y')
+axes.set_title('title')
+
+fig, axes = plt.subplots(figsize=(12,3))
+
+
+
+axes.plot(x, y, 'r')
+axes.set_xlabel('x')
+axes.set_ylabel('y')
+axes.set_title('title');
