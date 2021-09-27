@@ -145,7 +145,7 @@ def signed_dist(x, th, th0):
 # T is a positive integer number of steps to run
 def perceptron(data, labels, params = {}, hook = None):
     # if T not in params, default to 50
-    T = params.get('T', 50)
+    T = params.get('T', 10)
     (d, n) = data.shape
 
     theta = np.zeros((d, 1)); theta_0 = np.zeros((1, 1))
@@ -160,7 +160,7 @@ def perceptron(data, labels, params = {}, hook = None):
     return theta, theta_0
 
 def averaged_perceptron(data, labels, params = {}, hook = None):
-    T = params.get('T', 100)
+    T = params.get('T', 10)
     (d, n) = data.shape
 
     theta = np.zeros((d, 1)); theta_0 = np.zeros((1, 1))
@@ -207,8 +207,7 @@ def xval_learning_alg(learner, data, labels, k):
         labels_train = np.concatenate(s_labels[:i] + s_labels[i+1:], axis=1)
         data_test = np.array(s_data[i])
         labels_test = np.array(s_labels[i])
-        score_sum += eval_classifier(learner, data_train, labels_train,
-                                              data_test, labels_test)
+        score_sum += eval_classifier(learner, data_train, labels_train, data_test, labels_test)
     return score_sum/k
 
 ######################################################################
