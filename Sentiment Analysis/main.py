@@ -22,6 +22,11 @@ train_bow_features = p1.extract_bow_feature_vectors(train_texts, dictionary)
 val_bow_features = p1.extract_bow_feature_vectors(val_texts, dictionary)
 test_bow_features = p1.extract_bow_feature_vectors(test_texts, dictionary)
 
+
+# print(train_texts)
+# print(dictionary)
+# print(train_bow_features.shape)
+
 #-------------------------------------------------------------------------------
 # Problem 5
 #-------------------------------------------------------------------------------

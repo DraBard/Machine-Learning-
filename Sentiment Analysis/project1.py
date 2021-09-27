@@ -374,13 +374,12 @@ def extract_words(input_string):
 
     return input_string.lower().split()
 
-def stopwordss():
+
+def stop_words():
     with open('stopwords.txt') as f:
         stop_words = f.readlines()
-    stop_words2 = []
-    for i in stop_words:
-        stop_words2.append(i.strip("\n"))
-    return stop_words2
+    return [i.strip("\n") for i in stop_words]
+
 
 def bag_of_words(texts):
     """
@@ -389,7 +388,7 @@ def bag_of_words(texts):
 
     Feel free to change this code as guided by Problem 9
     """
-    stopwords = stopwordss()
+    stopwords = stop_words()
     dictionary = {} # maps word to unique index
     for text in texts:
         word_list = extract_words(text)
@@ -419,8 +418,9 @@ def extract_bow_feature_vectors(reviews, dictionary):
         word_list = extract_words(text)
         for word in word_list:
             if word in dictionary:
-                feature_matrix[i, dictionary[word]] = 1
+                feature_matrix[i, dictionary[word]] = word_list.count(word)  #instead of '= word_list.count(word) ' can be just set to 1. With one it is typical bag of words approach when occurance of word is indicated by 1 i a proper place i feature matrix.
     return feature_matrix
+
 
 
 def accuracy(preds, targets):
