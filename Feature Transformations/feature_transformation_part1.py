@@ -200,7 +200,8 @@ def xor_more():
 # Make it take miscellaneous args and pass into learner
 def test_linear_classifier_with_features(dataFun, learner, feature_fun,
                              draw = True, refresh = True, pause = True):
-    raw_data, labels = dataFun()
+    # print(dataFun)
+    raw_data, labels = dataFun
     data = feature_fun(raw_data) if feature_fun else raw_data
     if draw:
         ax = plot_data(raw_data, labels)
@@ -227,6 +228,7 @@ def make_polynomial_feature_fun(order):
     # raw_features is d by n
     # return is k by n where k = sum_{i = 0}^order  multichoose(d, i)
     def f(raw_features):
+        # print(raw_features)
         d, n = raw_features.shape
         result = []   # list of column vectors
         for j in range(n):
@@ -268,7 +270,7 @@ def test_with_features(dataFun, order = 2, draw=True, pause=True):
 # labels is dimension 1 by n
 # T is a positive integer number of steps to run
 def perceptron(data, labels, params = {}, hook = None):
-    T = params.get('T', 100)
+    T = params.get('T', 1000)
     (d, n) = data.shape
     m = 0
     theta = np.zeros((d, 1)); theta_0 = np.zeros((1, 1))
@@ -286,8 +288,10 @@ def perceptron(data, labels, params = {}, hook = None):
 
 
 #3.3.3B
-
-print(test_with_features(super_simple_separable_through_origin, order = 2, draw=True, pause=False))
+#THIS CODE IS GOING TO RUN GRAPHICAL REPRESENTATION OF PERCEPTRON WORKING ON DATA SET MATRIX2
+#GIVEN APPROPRIATE FEATURE TRANSORMATION POLYNOMIAL ORDER.
+matrix2 = xor_more()
+print(test_with_features(matrix2, order = 3, draw=True, pause=False))
 
 
 
