@@ -60,8 +60,13 @@ def compute_cost_function(X, Y, theta, lambda_factor, temp_parameter):
     Returns
         c - the cost value (scalar)
     """
-    #YOUR CODE HERE
-    raise NotImplementedError
+    
+    for n in range(X.shape[0]):
+        Xn = []
+        sum_j= 0
+        for k in range(theta.shape[0]):
+            sum_j += np.exp(np.dot(X[n],theta[k].T)/temp_parameter-c)
+            Xn.append(np.exp(np.dot(X[n],theta[k].T)/temp_parameter-c))
 
 def run_gradient_descent_iteration(X, Y, theta, alpha, lambda_factor, temp_parameter):
     """
