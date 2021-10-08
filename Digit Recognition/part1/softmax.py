@@ -31,9 +31,19 @@ def compute_probabilities(X, theta, temp_parameter):
     Returns:
         H - (k, n) NumPy array, where each entry H[j][i] is the probability that X[i] is labeled as j
     """
-    #YOUR CODE HERE
-    raise NotImplementedError
 
+    Xj_stack = []
+    for j in range(X.shape[0]):
+        X_j = []
+        sum_exp = 0
+        for k in range(theta.shape[0]):
+            c = np.amax(np.dot(X[j], theta.T)/temp_parameter)
+            sum_exp += np.exp(np.dot(X[j],theta[k].T)/temp_parameter-c)
+            X_j.append(np.exp(np.dot(X[j],theta[k].T)/temp_parameter-c))
+        Xj_stack.append([1/sum_exp* k for k in X_j])
+    X_np = np.array(Xj_stack).T
+    return X_np
+    
 def compute_cost_function(X, Y, theta, lambda_factor, temp_parameter):
     """
     Computes the total cost over every datapoint.

@@ -153,6 +153,7 @@ def check_compute_probabilities():
     zeros = np.zeros((k, d))
     temp = 0.2
     exp_res = np.ones((k, n)) / k
+    
     if check_array(
             ex_name, softmax.compute_probabilities,
             exp_res, X, zeros, temp):
@@ -162,6 +163,7 @@ def check_compute_probabilities():
     softmax.compute_probabilities(X, theta, temp)
     exp_res = np.zeros((k, n))
     exp_res[-1] = 1
+
     if check_array(
             ex_name, softmax.compute_probabilities,
             exp_res, X, theta, temp):
