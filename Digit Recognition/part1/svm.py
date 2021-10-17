@@ -1,5 +1,5 @@
 import numpy as np
-# from sklearn.svm import LinearSVC
+from sklearn.svm import LinearSVC
 
 
 ### Functions for you to fill in ###
