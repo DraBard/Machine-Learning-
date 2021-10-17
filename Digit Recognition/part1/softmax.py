@@ -32,24 +32,27 @@ def compute_probabilities(X, theta, temp_parameter):
         H - (k, n) NumPy array, where each entry H[j][i] is the probability that X[i] is labeled as j
     """
     # First attempt
-    Xn_stack = []
-    for n in range(X.shape[0]):
-        Xn = []
-        sum_exp = 0
-        for k in range(theta.shape[0]):
-            c = np.amax(np.dot(X[n], theta.T)/temp_parameter)
-            sum_exp += np.exp(np.dot(X[n],theta[k].T)/temp_parameter-c)
-            Xn.append(np.exp(np.dot(X[n],theta[k].T)/temp_parameter-c))
-        Xn_stack.append([1/sum_exp* k for k in Xn])
-    H = np.array(Xn_stack).T
-    # print(1)
-    # print(H)
-    return H
+    # Xn_stack = []
+    # for n in range(X.shape[0]):
+    #     Xn = []
+    #     sum_exp = 0
+    #     for k in range(theta.shape[0]):
+    #         c = np.amax(np.dot(X[n], theta.T)/temp_parameter)
+    #         sum_exp += np.exp(np.dot(X[n],theta[k].T)/temp_parameter-c)
+    #         Xn.append(np.exp(np.dot(X[n],theta[k].T)/temp_parameter-c))
+    #     Xn_stack.append([1/sum_exp* k for k in Xn])
+    # H = np.array(Xn_stack).T
+    # # print(1)
+    # # print(H)
+    # return H
 
     # Increasing efficiency - getting rid of loops
-    
-    # print(X) 
-    # print(theta)
+
+    H_start = np.dot(theta, X.T)        #H_start (k, n)
+    c = np.amax((np.dot(theta, X.T)/temp_parameter), axis= 0).reshape(1, X.shape[0])
+    H1 = np.exp(H_start/temp_parameter-c)
+    scalar_denominator = 1/(sum(H1))
+    return H1*scalar_denominator
 
 def compute_cost_function(X, Y, theta, lambda_factor, temp_parameter):
     """
@@ -67,27 +70,7 @@ def compute_cost_function(X, Y, theta, lambda_factor, temp_parameter):
     Returns
         c - the cost value (scalar)
     """
-    # sum_n = 0
-    # for n in range(X.shape[0]):
-    #     sum_k= 0
-    #     for k in range(theta.shape[0]):
-    #         log_part = 0
-    #         upper_exponent = np.exp(np.dot(X[n],theta[k].T)/temp_parameter)
-    #         for l in range(theta.shape[0]):
-    #             log_part += np.exp(np.dot(X[n],theta[l].T)/temp_parameter)
-    #         if k == Y[n] and upper_exponent/log_part != 0:
-    #             sum_k += np.nan_to_num(np.log((upper_exponent/log_part)))
-    #     sum_n += sum_k  
-    #     sum_k = 0
-
-    #     for k in range(theta.shape[0]):  
-    #         sum_d = 0
-    #         for d in range(theta.shape[1]):
-    #             sum_d += theta[k][d]**2
-    #         sum_k += sum_d
-    # return -1/X.shape[0]*sum_n+lambda_factor/2*sum_k
-    
-    
+    ##First attempt
     sum_n = 0
     for n in range(X.shape[0]):
         sum_k= 0
@@ -100,48 +83,13 @@ def compute_cost_function(X, Y, theta, lambda_factor, temp_parameter):
                 sum_k += np.nan_to_num(np.log((upper_exponent/log_part)))
         sum_n += sum_k  
 
-    #np.choose for tje second part    
+    sum_k = np.sum(theta**2)
             
     return -1/X.shape[0]*sum_n+lambda_factor/2*sum_k
 
+    ##improve efficiency. get rid of loops
 
-#stripping co
-X = ".1. 79. 32. 37. 49. 76. 18. 29. 36. 63. 21. 1. 25. 86. 79. 37. 91. 60. 18. 85. 79. 60. 1. 74. 36. 13. 11. 59.  5. 25.  1. 37. 50.] 1. 67.  6. 86. 24.  1. 15. 80. 47. 75. 15.] 1. 79.  6. 63. 34. 35. 59. 60. 86. 59. 37.] 1. 85. 32. 57. 75. 70. 98. 50. 66. 48. 18. 1. 32. 70. 64. 89. 98. 86. 81. 68. 32. 40.] 1. 11. 21. 50. 43. 88. 39. 14. 28. 28. 49.] 1. 82. 81. 10. 58.  7. 81. 88. 43. 11. 83.] 1. 74. 70. 37. 47. 54. 30. 35. 92. 32. 95."
 
-X_strip = ""
-for i in X:
-    if i != "." and i != "]" and i != "[":
-        X_strip += i
-
-X_strip = X_strip.split()
-X=[]
-for i in range(1,11):
-    X.append([int(number) for number in X_strip[(i-1)*11:11*i]])
-
-X= np.array(X)
-
-theta = "[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.] [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.] [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.] [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.] [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.] [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.] [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.] [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.] [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.] [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]"
-
-theta_strip = ""
-for i in theta:
-    if i != "." and i != "]" and i != "[":
-        theta_strip += i
-
-theta_strip = theta_strip.split()
-theta=[]
-for i in range(1,11):
-    theta.append([int(number) for number in theta_strip[(i-1)*11:11*i]])
-theta = np.array(theta)
-
-temp_parameter = 1.0  
-lambda_factor = 0.0001
-
-Y = np.array([0, 1,2,3,4,5,6,7,8,9])
- 
-
-# print(compute_cost_function(X, Y, theta, lambda_factor, temp_parameter))
-            
-            
 def run_gradient_descent_iteration(X, Y, theta, alpha, lambda_factor, temp_parameter):
     """
     Runs one step of batch gradient descent

@@ -63,6 +63,7 @@ def cubic_features(X):
             new_data[x_i, np.arange(unique_3.size)] = unique_3
             col_index = unique_3.size
 
+
     for i in range(n):
         newdata_colindex = col_index
         for j in range(d + 1):
@@ -80,7 +81,6 @@ def cubic_features(X):
                     newdata_colindex += 1
 
     return new_data
-
 
 def center_data(X):
     """

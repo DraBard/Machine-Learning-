@@ -66,7 +66,7 @@ def run_svm_one_vs_rest_on_MNIST():
     return test_error
 
 
-print('SVM one vs. rest test_error:', run_svm_one_vs_rest_on_MNIST())
+# print('SVM one vs. rest test_error:', run_svm_one_vs_rest_on_MNIST())
 
 
 def run_multiclass_svm_on_MNIST():
@@ -82,7 +82,7 @@ def run_multiclass_svm_on_MNIST():
     return test_error
 
 
-print('Multiclass SVM test_error:', run_multiclass_svm_on_MNIST())
+# print('Multiclass SVM test_error:', run_multiclass_svm_on_MNIST())
 
 #######################################################################
 # 4. Multinomial (Softmax) Regression and Gradient Descent
@@ -117,11 +117,11 @@ def run_softmax_on_MNIST(temp_parameter=1):
     #      and print the test_error_mod3
     return test_error
 
-time_start = time.clock()
+time_start = time.time()
 print(time_start)
 print('softmax test_error=', run_softmax_on_MNIST(temp_parameter=1))
-time_elapsed = time.clock() - time_start
-print(time_elapsed)
+time_elapsed = time.time() - time_start
+print(f'the simulation took{time_elapsed/60} min')
 # TODO: Find the error rate for temp_parameter = [.5, 1.0, 2.0]
 #      Remember to return the tempParameter to 1, and re-run run_softmax_on_MNIST
 
