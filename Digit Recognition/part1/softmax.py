@@ -71,23 +71,34 @@ def compute_cost_function(X, Y, theta, lambda_factor, temp_parameter):
         c - the cost value (scalar)
     """
     ##First attempt
-    sum_n = 0
-    for n in range(X.shape[0]):
-        sum_k= 0
-        for k in range(theta.shape[0]):
-            log_part = 0
-            upper_exponent = np.exp(np.dot(X[n],theta[k].T)/temp_parameter)
-            for l in range(theta.shape[0]):
-                log_part += np.exp(np.dot(X[n],theta[l].T)/temp_parameter)
-            if k == Y[n] and upper_exponent/log_part != 0:
-                sum_k += np.nan_to_num(np.log((upper_exponent/log_part)))
-        sum_n += sum_k  
-
-    sum_k = np.sum(theta**2)
-            
-    return -1/X.shape[0]*sum_n+lambda_factor/2*sum_k
+    # sum_n = 0
+    # for n in range(X.shape[0]):
+    #     sum_k= 0
+    #     for k in range(theta.shape[0]):
+    #         log_part = 0
+    #         upper_exponent = np.exp(np.dot(X[n],theta[k].T)/temp_parameter)
+    #         for l in range(theta.shape[0]):
+    #             log_part += np.exp(np.dot(X[n],theta[l].T)/temp_parameter)
+    #         if k == Y[n] and upper_exponent/log_part != 0:
+    #             sum_k += np.nan_to_num(np.log((upper_exponent/log_part)))
+    #     sum_n += sum_k
+    #
+    # sum_k = np.sum(theta**2)
+    #
+    # return -1/X.shape[0]*sum_n+lambda_factor/2*sum_k
 
     ##improve efficiency. get rid of loops
+
+    upper_log = np.exp(np.dot(X, theta.T)/temp_parameter)
+    lower_log = np.sum(np.exp(np.dot(X, theta.T) / temp_parameter), axis =1)
+    ln = np.nan_to_num(np.log(upper_log/ lower_log.reshape(X.shape[0], 1)))
+    ln = ln.reshape(ln.shape[1], ln.shape[0])
+    choose_jy = np.choose(Y, ln)
+    sum_n = np.sum(choose_jy)
+    sum_lambda = np.sum(theta**2)
+    return -1/X.shape[0]*sum_n + lambda_factor/2*sum_lambda
+
+
 
 
 def run_gradient_descent_iteration(X, Y, theta, alpha, lambda_factor, temp_parameter):
@@ -168,7 +179,7 @@ def compute_test_error_mod3(X, Y, theta, temp_parameter):
     Returns:
         test_error - the error rate of the classifier (scalar)
     """
-    return np.mean(get_classification(X, theta, temp_parameter)%3 == Y)
+    return 1 - np.mean(get_classification(X, theta, temp_parameter)%3 == Y)
 
 def softmax_regression(X, Y, temp_parameter, alpha, lambda_factor, k, num_iterations):
     """
