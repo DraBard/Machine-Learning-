@@ -269,7 +269,7 @@ def PCA10_run_softmax_on_MNIST(temp_parameter=1):
 
     return test_error
 
-time_start = time.time()
-print('softmax test_error=', PCA10_run_softmax_on_MNIST(temp_parameter=1))
-time_elapsed = time.time() - time_start
-print(f'the simulation took {round(time_elapsed/60,1)} min')
+# time_start = time.time()
+# print('softmax test_error=', PCA10_run_softmax_on_MNIST(temp_parameter=1))
+# time_elapsed = time.time() - time_start
+# print(f'the simulation took {round(time_elapsed/60,1)} min')
