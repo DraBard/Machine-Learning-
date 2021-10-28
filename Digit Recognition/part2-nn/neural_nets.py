@@ -60,28 +60,38 @@ class NeuralNetwork():
 
         # Calculate the input and activation of the hidden layer
         hidden_layer_weighted_input = self.input_to_hidden_weights*input_values + self.biases       #(3 by 1 matrix)
+        # print(hidden_layer_weighted_input)
         f = np.vectorize(rectified_linear_unit)
         hidden_layer_activation = f(hidden_layer_weighted_input)                                    #(3 by 1 matrix)
-
+        # print(hidden_layer_activation)
+        # print( self.hidden_to_output_weights)
         output = self.hidden_to_output_weights*hidden_layer_activation                              #(1,3)*(3,1) = (1,1)
         activated_output = output_layer_activation(output)                                          #(1,1)
-
+        # print(activated_output)
         ### Backpropagation ###
 
         # Compute gradients
-        output_layer_error = (y - activated_output)*activated_output*(1 - activated_output)
-        hidden_layer_error = np.multiply(np.multiply(output_layer_error*self.hidden_to_output_weights, activated_output), (1 - activated_output))    #(3 by 1 matrix)
-
         f1 = np.vectorize(output_layer_activation_derivative)
         f2 = np.vectorize(rectified_linear_unit_derivative)
-        bias_gradients = (y- activated_output)*f1(output)            #(1, 1)
-        hidden_to_output_weight_gradients = (y- activated_output)*f1(output)  *hidden_layer_activation.T    #(1,3)   >> f1 from output or activated_output?
-        input_to_hidden_weight_gradients = np.multiply(np.multiply((y- activated_output)*f1(output), self.hidden_to_output_weights.T), f2(hidden_layer_activation))*input_values.T     #np.multiply((1,3).T, (3,1))*(2,1).T = (3,2)
 
+        output_layer_error = (activated_output- y)*f1(output) #(1,1)
+        # print(output_layer_error)
+        hidden_layer_error = np.multiply(np.multiply(output_layer_error, self.hidden_to_output_weights.T), f2(hidden_layer_activation)) #(1 by 3 matrix)
+        # print(hidden_layer_error)
+        
+
+        bias_gradients = f2(hidden_layer_activation)* output_layer_error #(3, 1)
+        hidden_to_output_weight_gradients = hidden_layer_activation* output_layer_error #(3, 1)  
+        # print(hidden_to_output_weight_gradients)
+        input_to_hidden_weight_gradients =np.multiply( np.hstack((hidden_layer_error, hidden_layer_error)), input_values.T)             # (3, 2)
+        # print(input_to_hidden_weight_gradients)
         # Use gradients to adjust weights and biases using gradient descent
-        self.biases = self.biases + bias_gradients
-        self.input_to_hidden_weights = self.input_to_hidden_weights + input_to_hidden_weight_gradients    #(3,2)
-        self.hidden_to_output_weights = self.hidden_to_output_weights + hidden_to_output_weight_gradients #(1,3)
+        self.biases -=  self.learning_rate*bias_gradients             #(3, 1)
+        # print(self.biases)
+        self.input_to_hidden_weights -= self.learning_rate*input_to_hidden_weight_gradients   #(3, 2)
+        # print(self.input_to_hidden_weights)
+        self.hidden_to_output_weights -= self.learning_rate*hidden_to_output_weight_gradients.T #(1, 3)
+        # print(self.hidden_to_output_weights)
 
     def predict(self, x1, x2):
 
@@ -89,11 +99,14 @@ class NeuralNetwork():
 
         # Compute output for a single input(should be same as the forward propagation in training)
         hidden_layer_weighted_input = self.input_to_hidden_weights*input_values + self.biases       #(3 by 1 matrix)
+        # print(hidden_layer_weighted_input)
         f = np.vectorize(rectified_linear_unit)
         hidden_layer_activation = f(hidden_layer_weighted_input)                                    #(3 by 1 matrix)
+        # print(hidden_layer_activation)
 
         output = self.hidden_to_output_weights*hidden_layer_activation                              #(1,3)*(3,1) = (1,1)
-        activated_output = output_layer_activation(output)                                          #(1,1)
+        activated_output = output_layer_activation(output)     
+        # print(activated_output)                                     #(1,1)
 
 
         return activated_output.item()
