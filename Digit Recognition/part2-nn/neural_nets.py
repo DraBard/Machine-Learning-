@@ -76,17 +76,17 @@ class NeuralNetwork():
 
         output_layer_error = (activated_output- y)*f1(output) #(1,1)
         # print(output_layer_error)
-        hidden_layer_error = np.multiply(np.multiply(output_layer_error, self.hidden_to_output_weights.T), f2(hidden_layer_activation)) #(1 by 3 matrix)
+        hidden_layer_error = np.multiply(np.multiply(output_layer_error, self.hidden_to_output_weights.T), f2(hidden_layer_activation)) #(3 by 1 matrix)
         # print(hidden_layer_error)
         
 
-        bias_gradients = f2(hidden_layer_activation)* output_layer_error #(3, 1)
-        hidden_to_output_weight_gradients = hidden_layer_activation* output_layer_error #(3, 1)  
+        bias_gradients = np.multiply(f2(hidden_layer_activation), self.hidden_to_output_weights.T )*output_layer_error     #(3, 1)
+        hidden_to_output_weight_gradients = hidden_layer_activation* output_layer_error #(3, 1)
         # print(hidden_to_output_weight_gradients)
         input_to_hidden_weight_gradients =np.multiply( np.hstack((hidden_layer_error, hidden_layer_error)), input_values.T)             # (3, 2)
         # print(input_to_hidden_weight_gradients)
         # Use gradients to adjust weights and biases using gradient descent
-        self.biases -=  self.learning_rate*bias_gradients             #(3, 1)
+        self.biases -=  self.learning_rate*bias_gradients         #(3, 1)
         # print(self.biases)
         self.input_to_hidden_weights -= self.learning_rate*input_to_hidden_weight_gradients   #(3, 2)
         # print(self.input_to_hidden_weights)
