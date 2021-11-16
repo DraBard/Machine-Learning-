@@ -487,7 +487,7 @@ def test_xval_learning_alg(xval_learning_alg,perceptron):
 
 def perceptron(data, labels, params={}, hook=None):
     # if T not in params, default to 100
-    T = params.get('T', 50)
+    T = params.get('T', 60)
     # Your implementation here
     d, n = data.shape
     theta =  np.zeros((d, 1)) 
@@ -501,18 +501,37 @@ def perceptron(data, labels, params={}, hook=None):
           theta_0 += labels[0][i]
           theta_0_float = float(theta_0)
           mistake += 1
-          # print(mistake)
           if hook: 
               hook((theta, theta_0_float))
 
     
 
-    return theta, theta_0
+    return theta, theta_0, mistake
 
 #3.2.2A
 # print(perceptron(data =   np.array([[200, 800, 200, 800],
 #              [0.2,  0.2,  0.8,  0.8]]),
 #                  labels = np.array([[-1, -1, 1, 1]])))
+#mid-term exam
+# data = np.array([[0, 2, 3, 0, 2, 5, 5, 2, 4, 5], [0, 0, 0, 2, 2, 1, 2, 4, 4, 5]])
+# labels = np.array([[-1,-1,-1,-1,-1,1,1,1,1,1]])
+#
+# # print(perceptron(data, labels))
+#
+# def mid_exam(data, labels):
+#     for i in range(len(labels[0])):
+#
+#         data = np.roll(data, i, axis = 1)
+#         labels = np.roll(labels, i, axis =1 )
+#         data1 = data.reshape(10,2)
+#         data_squared = data1**2
+#         data_poly = 2**(1/2)*data1[:,0]*data1[:,1]
+#         data_kernel = np.hstack((data_squared[:,0].reshape(10,1), data_poly.reshape(10,1), data_squared[:,1].reshape(10,1)))
+#         data_kernel = data_kernel.reshape(3,10)
+#         print(perceptron(data_kernel, labels))
+#
+#
+# print(mid_exam(data, labels))
 
 #3.2.2D
 
@@ -566,9 +585,9 @@ def averaged_perceptron(data, labels, params={}, hook=None):
 
 # Visualization of Averaged Perceptron:
 
-for datafn in (super_simple_separable, xor, xor_more, big_higher_dim_separable):
-    data, labels = datafn()
-    test_linear_classifier(datafn,averaged_perceptron,draw=True)
+# for datafn in (super_simple_separable, xor, xor_more, big_higher_dim_separable):
+#     data, labels = datafn()
+#     test_linear_classifier(datafn,averaged_perceptron,draw=True)
 
 
 ##Test Cases:
