@@ -1,6 +1,7 @@
 """Mixture model using EM"""
 from typing import Tuple
 import numpy as np
+import common
 from common import GaussianMixture
 
 
@@ -20,7 +21,7 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
     posteriors = []
     post = []
     for k in range(mixture.p.shape[0]):
-        p_posterior = mixture.p[k]/(2*np.pi*mixture.var[k])**(1/2)*np.exp(-np.linalg.norm(X-mixture.mu[k], axis = 1)**2/(2*mixture.var[k]))
+        p_posterior = mixture.p[k]/(2*np.pi*mixture.var[k])**(X.shape[1]/2)*np.exp(-np.linalg.norm(X-mixture.mu[k], axis = 1)**2/(2*mixture.var[k]))
         posteriors.append(p_posterior)
     for i in range(len(posteriors)):
         post.append(posteriors[i]/sum(posteriors))
@@ -40,7 +41,21 @@ def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
     Returns:
         GaussianMixture: the new gaussian mixture
     """
-    raise NotImplementedError
+    mu = []
+    var = []
+    for k in range(post.shape[1]):
+        mu_k = np.sum(post[:, k].reshape(post.shape[0], 1)*X, axis = 0)/np.sum(post[:, k])
+        mu.append(mu_k)
+    mu = np.vstack(mu)
+    p = np.sum(post, axis = 0)/post.shape[0]
+    for k in range(post.shape[1]):
+        var_k = np.sum(post[:, k]*np.linalg.norm(X - mu[k], axis = 1)**2)/(X.shape[1]*np.sum(post[:, k]))
+        var.append(var_k)
+    var = np.hstack(var)
+
+    Gauss = GaussianMixture(mu, var, p)
+
+    return Gauss
 
 
 def run(X: np.ndarray, mixture: GaussianMixture,
@@ -58,4 +73,15 @@ def run(X: np.ndarray, mixture: GaussianMixture,
             for all components for all examples
         float: log-likelihood of the current assignment
     """
-    raise NotImplementedError
+    LL_test = []
+    i = -1
+    while True:
+        post, LL = estep(X, mixture)
+        LL_test.append(LL)
+        mixture = mstep(X, post)
+        i += 1
+        if len(LL_test) > 1:
+            if LL_test[i] - LL_test[i-1] <= 10**(-6)*abs(LL_test[i]):
+                break
+    return mixture, post, LL
+
