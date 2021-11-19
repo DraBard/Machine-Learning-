@@ -73,15 +73,14 @@ def run(X: np.ndarray, mixture: GaussianMixture,
             for all components for all examples
         float: log-likelihood of the current assignment
     """
-    LL_test = []
-    i = -1
+    LL_test = [np.sum(np.log(np.sum(post, axis = 0)))]
+    i = 0
     while True:
-        post, LL = estep(X, mixture)
+        posterior, LL = estep(X, mixture)
         LL_test.append(LL)
-        mixture = mstep(X, post)
+        mixture = mstep(X, posterior)
         i += 1
-        if len(LL_test) > 1:
-            if LL_test[i] - LL_test[i-1] <= 10**(-6)*abs(LL_test[i]):
-                break
-    return mixture, post, LL
+        if LL_test[i] - LL_test[i-1] <= 10**(-6)*abs(LL_test[i]):
+            break
+    return mixture, posterior, LL
 
