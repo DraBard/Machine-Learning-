@@ -60,3 +60,18 @@ def GMM_plot():
             common.plot(X, mixture, post, "GMM")
 
 # print(GMM_plot())
+
+##TASK 5
+
+def run_BIC():
+    l1 = []
+    for s in range(0, 5):
+        l = []
+        for k in range(1, 5):
+            mixture, post = common.init(X, k, s)
+            mixture, post, LL = naive_em.run(X, mixture, post)
+            l.append(common.bic(X, mixture, LL))
+        l1.append(l)
+    return l1
+
+print(run_BIC())
