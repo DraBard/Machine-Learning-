@@ -33,7 +33,7 @@ def KMeans_plot():
 
 ###TASK 3
 
-# print(naive_em.estep(X, common.init(X, 3, 0)[0]))
+print(naive_em.estep(X, common.init(X, 3, 0)[0]))
 # print(naive_em.mstep(X, naive_em.estep(X, common.init(X, 3, 0)[0])[0]))
 # print(naive_em.run(X, common.init(X, 3, 0)[0], naive_em.estep(X, common.init(X, 3, 0)[0])))
 
@@ -74,4 +74,4 @@ def run_BIC():
         l1.append(l)
     return l1
 
-print(run_BIC())
+# print(run_BIC())
