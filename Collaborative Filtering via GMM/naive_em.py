@@ -80,7 +80,7 @@ def run(X: np.ndarray, mixture: GaussianMixture,
         LL_test.append(LL)
         mixture = mstep(X, posterior)
         i += 1
-        if LL_test[i] - LL_test[i-1] <= 10**(-6)*abs(LL_test[i]):
+        if abs(LL_test[i] - LL_test[i-1]) <= 10**(-6)*abs(LL_test[i]):
             break
     return mixture, posterior, LL
 

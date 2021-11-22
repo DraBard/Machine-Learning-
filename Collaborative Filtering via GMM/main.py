@@ -3,10 +3,13 @@ import kmeans
 import common
 import naive_em
 import em
+import time
 import matplotlib.pyplot as plt
-from sklearn.mixture import GaussianMixture as GMM
 
 X = np.loadtxt("toy_data.txt")
+Xx = np.loadtxt("test_incomplete.txt")
+X_gold = np.loadtxt("test_complete.txt")
+x_netflix = np.loadtxt("netflix_incomplete.txt")
 
 
 ###TASK 2
@@ -33,7 +36,7 @@ def KMeans_plot():
 
 ###TASK 3
 
-print(naive_em.estep(X, common.init(X, 3, 0)[0]))
+# print(naive_em.estep(X, common.init(X, 3, 0)[0]))
 # print(naive_em.mstep(X, naive_em.estep(X, common.init(X, 3, 0)[0])[0]))
 # print(naive_em.run(X, common.init(X, 3, 0)[0], naive_em.estep(X, common.init(X, 3, 0)[0])))
 
@@ -75,3 +78,22 @@ def run_BIC():
     return l1
 
 # print(run_BIC())
+
+#TASK 8
+
+def LL_max(X):
+    l1 = []
+    for s in range(0, 5):
+        l = []
+        for k in (1, 12):
+            print(k)
+            mixture, post = common.init(X, k, s)
+            l.append(em.run(X, mixture, post)[2])
+        l1.append(l)
+    return l1
+
+
+start = time.time()
+print(LL_max(x_netflix))
+end = time.time()
+print(f"this computation took {start-end}")
