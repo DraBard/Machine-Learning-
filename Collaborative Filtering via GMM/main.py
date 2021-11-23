@@ -93,7 +93,7 @@ def LL_max(X):
     return l1
 
 
-start = time.time()
-print(LL_max(x_netflix))
-end = time.time()
-print(f"this computation took {start-end}")
+# start = time.time()
+# print(LL_max(x_netflix))
+# end = time.time()
+# print(f"this computation took {round(end - start)} seconds")
