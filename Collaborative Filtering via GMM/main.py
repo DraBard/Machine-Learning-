@@ -10,6 +10,7 @@ X = np.loadtxt("toy_data.txt")
 Xx = np.loadtxt("test_incomplete.txt")
 X_gold = np.loadtxt("test_complete.txt")
 x_netflix = np.loadtxt("netflix_incomplete.txt")
+x_netflix_gold = np.loadtxt("netflix_complete.txt")
 
 
 ###TASK 2
@@ -93,7 +94,28 @@ def LL_max(X):
     return l1
 
 
-start = time.time()
-print(LL_max(x_netflix))
-end = time.time()
-print(f"this computation took {round(end - start)} seconds")
+# start = time.time()
+# print(LL_max(x_netflix))
+# end = time.time()
+# print(f"this computation took {round((end - start)/60)} minutes")
+
+#COMPLETING MISSING ENTRIES
+#the mixture here should be a final one
+def missing_entries(X, mixture):
+
+    return(em.fill_matrix(X, mixture))
+
+
+mixture1, post1 = common.init(x_netflix, 12, 1)
+mixture2 = em.run(x_netflix, mixture1, post1)[0]
+X_new = missing_entries(x_netflix, mixture2)
+print(common.rmse(X_new, x_netflix_gold))
+
+# def missing_entries1(X, mixture):
+#
+#     return(em.fill_matrix(X, mixture))
+#
+#
+# mixture1, post1 = common.init(Xx, 3, 0)
+# mixture2 = em.run(Xx, mixture1, post1)[0]
+# print(missing_entries1(Xx, mixture2))

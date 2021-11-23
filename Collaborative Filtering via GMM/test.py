@@ -16,7 +16,7 @@ mixture, post = common.init(X, K)
 post_em, LL = em.estep(X, mixture)
 
 ##DEBUGGING
-print(em.estep(X, mixture))
+# print(em.estep(X, mixture))
 # print(em.mstep(X, post_em, mixture))
 # print(em.run(X, mixture, post))
 

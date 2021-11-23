@@ -20,7 +20,6 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
     """
 
     posteriors = []
-    posteriors1 = []
     post = []
     for k in range(mixture.p.shape[0]):
         p_posteriors = []
@@ -140,4 +139,33 @@ def fill_matrix(X: np.ndarray, mixture: GaussianMixture) -> np.ndarray:
     Returns
         np.ndarray: a (n, d) array with completed data
     """
-    raise NotImplementedError
+    #estep
+    posteriors = []
+    post = []
+    for k in range(mixture.p.shape[0]):
+        p_posteriors = []
+        for j in range(X.shape[0]):
+            x = X[j]
+            x_0 = np.where(x != 0)
+            SE = np.linalg.norm(x[x_0] - mixture.mu[k][x_0])**2
+            p_posterior = np.log((mixture.p[k] + 1e-16)) - len(x_0[0])/2 * np.log(2*np.pi*mixture.var[k]) - SE/(2*mixture.var[k])
+            p_posteriors.append(p_posterior)
+        p_posteriors = np.array(p_posteriors)
+        posteriors.append(p_posteriors)
+    for k in range(len(posteriors)):
+        fuj = posteriors[k] - logsumexp(posteriors , axis = 0)
+        post.append(np.exp(fuj))
+    posteriors_result = np.vstack(post).T
+
+    #Rest of the implementation.
+    X_copy = X.copy()
+    for n in range(X.shape[0]):
+        x_av = []
+        x = X[n]
+        x_copy = X_copy[n]
+        x_0 = np.where(x == 0)
+        for k in range(mixture.mu.shape[0]):
+            x_av.append(mixture.mu[k][x_0] * posteriors_result[n][k])
+        x_av = np.sum(x_av, axis = 0)
+        x_copy[x_0] = x_av
+    return X_copy
