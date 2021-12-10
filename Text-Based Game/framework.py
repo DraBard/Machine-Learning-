@@ -159,6 +159,7 @@ def step_game(current_room_desc, current_quest_desc, action_index, object_index)
     next_quest_desc = current_quest_desc
     return (next_room_desc, next_quest_desc, reward, terminal)
 
+
 # start a new game
 def newGame():
     global STEP_COUNT
@@ -179,6 +180,8 @@ def newGame():
         print('Start quest: %s' % (quest_desc,))
 
     return (room_desc, quest_desc, terminal)
+
+print(newGame())
 
 def get_actions():
     return (actions)
