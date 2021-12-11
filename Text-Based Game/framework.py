@@ -181,7 +181,7 @@ def newGame():
 
     return (room_desc, quest_desc, terminal)
 
-print(newGame())
+# print(newGame())
 
 def get_actions():
     return (actions)
@@ -207,6 +207,8 @@ def make_all_states_index():
             dictionary_quest_desc[quest] = len(dictionary_quest_desc)
 
     return (dictionary_room_desc, dictionary_quest_desc)
+# print(make_all_states_index())
+
 
 # def gameOver(room_index, quest_index, action_index, object_index):
 #     if (command_is_valid[room_index, action_index, object_index]==1):
