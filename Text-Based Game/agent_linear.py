@@ -45,8 +45,12 @@ def epsilon_greedy(state_vector, theta, epsilon):
     Returns:
         (int, int): the indices describing the action/object to take
     """
-    # TODO Your code here
-    action_index, object_index = None, None
+    if epsilon >= np.random.random():
+        action_index, object_index = np.random.randint(NUM_ACTIONS), np.random.randint(NUM_OBJECTS)
+    else:
+        q_value = (theta @ state_vector)[tuple2index(action_index, object_index)]
+        action_index, object_index = np.unravel_index(np.argmax(a), a.shape)
+
     return (action_index, object_index)
 # pragma: coderesponse end
 
@@ -85,18 +89,22 @@ def run_episode(for_training):
         None
     """
     epsilon = TRAINING_EP if for_training else TESTING_EP
-    epi_reward = None
-
+    epi_reward = 0
     # initialize for each episode
-    # TODO Your code here
+    i = 0
 
     (current_room_desc, current_quest_desc, terminal) = framework.newGame()
+
     while not terminal:
         # Choose next action and execute
         current_state = current_room_desc + current_quest_desc
         current_state_vector = utils.extract_bow_feature_vector(
             current_state, dictionary)
-        # TODO Your code here
+        
+        action_index, object_index = epsilon_greedy(current_state_1, current_state_2, q_func, epsilon)
+        next_room_desc, next_quest_desc, reward, terminal = framework.step_game(current_room_desc,
+                                                                                current_quest_desc, action_index,
+                                                                                object_index)
 
         if for_training:
             # update Q-function.

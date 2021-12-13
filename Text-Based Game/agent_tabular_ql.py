@@ -104,14 +104,14 @@ def run_episode(for_training):
         current_state_1 = dict_room_desc[current_room_desc]
         current_state_2 = dict_quest_desc[current_quest_desc]
         action_index, object_index = epsilon_greedy(current_state_1, current_state_2, q_func, epsilon)
-        current_room_desc, current_quest_desc, reward, terminal = framework.step_game(current_room_desc,
-                                                                                      current_quest_desc, action_index,
-                                                                                      object_index)
-        next_state_1 = dict_room_desc[current_room_desc]
-        next_state_2 = dict_quest_desc[current_quest_desc]
-
+        next_room_desc, next_quest_desc, reward, terminal = framework.step_game(current_room_desc,
+                                                                                current_quest_desc, action_index,
+                                                                                object_index)
+        
         if for_training:
             # update Q-function.
+            next_state_1 = dict_room_desc[next_room_desc]
+            next_state_2 = dict_quest_desc[next_quest_desc]
             tabular_q_learning(q_func, current_state_1, current_state_2, action_index, object_index, reward, next_state_1, next_state_2, terminal)
 
         if not for_training:
@@ -120,6 +120,9 @@ def run_episode(for_training):
             epi_reward += reward
 
         # prepare next step
+        current_room_desc =  next_room_desc
+        current_quest_desc =  next_quest_desc
+        
         i += 1
 
 
