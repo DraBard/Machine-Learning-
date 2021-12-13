@@ -40,7 +40,7 @@ def epsilon_greedy(state_1, state_2, q_func, epsilon):
         a = q_func[state_1, state_2]
         action_index, object_index = np.unravel_index(np.argmax(a), a.shape)
 
-    return (action_index, object_index)
+    return action_index, object_index
 
 
 # pragma: coderesponse end
@@ -76,10 +76,10 @@ def tabular_q_learning(q_func, current_state_1, current_state_2, action_index,
     return None  # This function shouldn't return anything
 
 
-# pragma: coderesponse end
+# pragma: code response end
 
 
-# pragma: coderesponse template
+# pragma: code response template
 def run_episode(for_training):
     """ Runs one episode
     If for training, update Q function
@@ -95,7 +95,7 @@ def run_episode(for_training):
 
     epi_reward = 0
     # initialize for each episode
-    i = 0
+    t = 0
 
     (current_room_desc, current_quest_desc, terminal) = framework.newGame()
 
@@ -107,7 +107,6 @@ def run_episode(for_training):
         next_room_desc, next_quest_desc, reward, terminal = framework.step_game(current_room_desc,
                                                                                 current_quest_desc, action_index,
                                                                                 object_index)
-        
         if for_training:
             # update Q-function.
             next_state_1 = dict_room_desc[next_room_desc]
@@ -116,14 +115,12 @@ def run_episode(for_training):
 
         if not for_training:
             # update reward
-            reward = GAMMA**i*reward
-            epi_reward += reward
+            epi_reward += GAMMA**t*reward
 
         # prepare next step
-        current_room_desc =  next_room_desc
-        current_quest_desc =  next_quest_desc
-        
-        i += 1
+        current_room_desc = next_room_desc
+        current_quest_desc = next_quest_desc
+        t += 1
 
 
     if not for_training:
@@ -187,6 +184,3 @@ if __name__ == '__main__':
     axis.set_title(('Tablular: nRuns=%d, Epilon=%.2f, Epi=%d, alpha=%.4f' %
                     (NUM_RUNS, TRAINING_EP, NUM_EPIS_TRAIN, ALPHA)))
     plt.show()
-
-
-print(run_episode(False))
