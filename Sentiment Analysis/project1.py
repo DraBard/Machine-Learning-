@@ -359,9 +359,6 @@ def classifier_accuracy(
     return counter_train/len(train_labels), counter_val/len(val_labels)
 
 
-
-
-
 def extract_words(input_string):
     """
     Helper function for bag_of_words()
