@@ -17,7 +17,7 @@ img_rows, img_cols = 42, 28 # input image dimensions
 
 class CNN(nn.Module):
 
-    def __init__(self, input_dimension):
+    def __init__(self):
         super(CNN, self).__init__()
         self.flatten = Flatten()
         self.conv1 = nn.Conv2d(1, 32, (2, 2))
@@ -65,8 +65,7 @@ def main():
     test_batches = batchify_data(X_test, y_test, batch_size)
 
     # Load model
-    input_dimension = img_rows * img_cols
-    model = CNN(input_dimension) # TODO add proper layers to CNN class above
+    model = CNN()
 
     # Train
     train_model(train_batches, dev_batches, model)

@@ -89,14 +89,14 @@ def compute_cost_function(X, Y, theta, lambda_factor, temp_parameter):
 
     ##improve efficiency. get rid of loops
 
-    upper_log = np.exp(np.dot(X, theta.T)/temp_parameter)
-    lower_log = np.sum(np.exp(np.dot(X, theta.T) / temp_parameter), axis =1)
-    ln = np.nan_to_num(np.log(upper_log/ lower_log.reshape(X.shape[0], 1)))
-    ln = ln.reshape(ln.shape[1], ln.shape[0])
-    choose_jy = np.choose(Y, ln)
-    sum_n = np.sum(choose_jy)
-    sum_lambda = np.sum(theta**2)
-    return -1/X.shape[0]*sum_n + lambda_factor/2*sum_lambda
+    N = X.shape[0]
+    probabilities = compute_probabilities(X, theta, temp_parameter)
+    selected_probabilities = np.choose(Y, probabilities)
+    non_reguralizing_cost = np.sum(np.log(selected_probabilities))
+    non_reguralizing_cost *= -1 / N
+    reguralizing_cost = np.sum(np.square(theta))
+    reguralizing_cost *= lambda_factor / 2.0
+    return non_reguralizing_cost + reguralizing_cost
 
 
 

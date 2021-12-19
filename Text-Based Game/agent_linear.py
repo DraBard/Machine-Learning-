@@ -48,8 +48,8 @@ def epsilon_greedy(state_vector, theta, epsilon):
     if epsilon >= np.random.random():
         action_index, object_index = np.random.randint(NUM_ACTIONS), np.random.randint(NUM_OBJECTS)
     else:
-        dot = theta @ state_vector
-        index = np.argmax(dot)
+        q_value = theta @ state_vector
+        index = np.argmax(q_value)
         action_index, object_index = index2tuple(index)
 
     return action_index, object_index
