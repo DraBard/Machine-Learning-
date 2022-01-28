@@ -2,7 +2,7 @@ import pdb
 import numpy as np
 import itertools
 
-#np.random.seed(0)
+np.random.seed(0)
 from keras.models import Sequential
 from tensorflow.keras.optimizers import SGD
 from tensorflow.keras.optimizers import Adam
@@ -140,6 +140,7 @@ def run_keras_2d(data_name, layers, epochs, display=True, split=0.25, verbose=Tr
     if X_test is not None:
         y_test = np_utils.to_categorical(y3, num_classes)  # one-hot
     val_acc, test_acc = 0, 0
+
     for trial in range(trials):
         # Reset the weights
         # See https://github.com/keras-team/keras/issues/341
@@ -494,6 +495,19 @@ def plot_decision(data, cl, diff=False):
 
 if __name__ == "__main__":
     # X_train, y, model = run_keras_2d("3", archs(2)[1], 10, display=True, verbose=True, trials=5)
-    #3C
-    X_train, y, model = run_keras_2d("3class", archs(3)[4], 10, split =0.5, display=True, verbose=True, trials=5)
-
+    # #3C
+    # X_train, y, model = run_keras_2d("3class", archs(3)[4], 10, split =0.5, display=True, verbose=True, trials=5)
+    # #3G
+    # X_train, y, model = run_keras_2d("3class", archs(3)[0], 10, display=True, verbose=True, trials=1)
+    # #3G
+    # W = []
+    # X = np.array([[-1,0], [1,0], [0,-11], [0,1], [-1,-1], [-1,1], [1,1], [1,-1]])
+    # for layer in model.layers:
+    #     W.append(layer.get_weights())
+    # Wn = W[0][0]
+    # Wb = W[0][1]
+    #
+    # def dotproduct(X, Wn, Wb):
+    #     return X@Wn + Wb
+    #
+    # print(dotproduct(X, Wn, Wb))
