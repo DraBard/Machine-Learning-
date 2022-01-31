@@ -2,7 +2,7 @@ import pdb
 import numpy as np
 import itertools
 
-np.random.seed(0)
+# np.random.seed(0)
 from keras.models import Sequential
 from tensorflow.keras.optimizers import SGD
 from tensorflow.keras.optimizers import Adam
@@ -108,7 +108,7 @@ def run_keras(X_train, y_train, X_val, y_val, X_test, y_test, layers, epochs, sp
     # Evaluate the model on validation data, if any
     if X_val is not None or split > 0:
         val_acc, val_loss = history.values['epoch_val_accuracy'][-1], history.values['epoch_val_loss'][-1]
-        print("\nLoss on validation set:" + str(val_loss) + " Accuracy on validation set: " + str(val_acc))
+        print("\nLoss on validation set: " + str(val_loss) + " Accuracy on validation set: " + str(val_acc))
     else:
         val_acc = None
     # Evaluate the model on test data, if any
@@ -272,6 +272,41 @@ def train_neural_counter(layers, data, loss_func='mse', display=False):
 # Problem 5
 ######################################################################
 
+def archs_for_fc_MNIST(classes=10, unit = 10):
+    return [[Dense(input_dim=784, units=classes, activation="softmax")],
+            [Dense(input_dim=28*28, units=unit, activation='relu'),
+             Dense(units=classes, activation="softmax")],
+            [Dense(input_dim=28*28, units=100, activation='relu'),
+             Dense(units=classes, activation="softmax")],
+            [Dense(input_dim=28*28, units= 512, activation='relu'),
+             Dense(units=256, activation='relu'),
+             Dense(units=classes, activation="softmax")],
+            [Dense(input_dim=784, units=classes, activation="softmax", kernel_initializer=initializers.VarianceScaling
+            (scale=0.001, mode='fan_in', distribution='normal', seed=None))],
+            [Dense(input_dim=48*48, units=512, activation='relu'),
+             Dense(units=256, activation='relu'),
+             Dense(units=classes, activation="softmax")]
+            ]
+
+def archs_for_cnn_MNIST(classes=10):
+    return [[Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)),
+            MaxPooling2D((2, 2)),
+            Conv2D(32, (3, 3), activation='relu'),
+            MaxPooling2D((2, 2)),
+            Flatten(),
+            Dense(input_dim=28*28, units= 128, activation='relu'),
+            Dropout(0.5),
+            Dense(units=classes, activation="softmax")],
+            [Conv2D(32, (3, 3), activation='relu', input_shape=(48, 48, 1)),
+             MaxPooling2D((2, 2)),
+             Conv2D(32, (3, 3), activation='relu'),
+             MaxPooling2D((2, 2)),
+             Flatten(),
+             Dense(input_dim=48 * 48, units=128, activation='relu'),
+             Dropout(0.5),
+             Dense(units=classes, activation="softmax")]
+            ]
+
 def shifted(X, shift):
     n = X.shape[0]
     m = X.shape[1]
@@ -317,13 +352,21 @@ def run_keras_fc_mnist(train, test, layers, epochs, split=0.1, verbose=True, tri
     for trial in range(trials):
         # Reset the weights
         # See https://github.com/keras-team/keras/issues/341
-        session = K.get_session()
-        for layer in layers:
-            for v in layer.__dict__:
-                v_arg = getattr(layer, v)
-                if hasattr(v_arg, 'initializer'):
-                    initializer_func = getattr(v_arg, 'initializer')
-                    initializer_func.run(session=session)
+        # See https://stackoverflow.com/questions/63435679/reset-all-weights-of-keras-model
+
+        #start reinitializing the weights after 1st trial.
+        if trial > 1:
+            for ix, layer in enumerate(layers):
+                if hasattr(layers[ix], 'kernel_initializer') and \
+                        hasattr(layers[ix], 'bias_initializer'):
+                    weight_initializer = layers[ix].kernel_initializer
+                    bias_initializer = layers[ix].bias_initializer
+
+                    old_weights, old_biases = layers[ix].get_weights()
+
+                    layers[ix].set_weights([
+                        weight_initializer(shape=old_weights.shape),
+                        bias_initializer(shape=len(old_biases))])
         # Run the model
         model, history, vacc, tacc = \
             run_keras(X_train, y_train, X_val, y_val, None, None, layers, epochs, split=split, verbose=verbose)
@@ -351,21 +394,22 @@ def run_keras_cnn_mnist(train, test, layers, epochs, split=0.1, verbose=True, tr
     for trial in range(trials):
         # Reset the weights
         # See https://github.com/keras-team/keras/issues/341
-        from keras.initializers import glorot_uniform
-        initial_weights = model.get_weights()
+        # See https://stackoverflow.com/questions/63435679/reset-all-weights-of-keras-model
 
-        backend_name = K.backend()
-        if backend_name == 'tensorflow':
-            k_eval = lambda placeholder: placeholder.eval(session=K.get_session())
-        elif backend_name == 'theano':
-            k_eval = lambda placeholder: placeholder.eval()
-        else:
-            raise ValueError("Unsupported backend")
+        #start reinitializing the weights after 1st trial.
+        if trial > 1:
+            for ix, layer in enumerate(layers):
+                if hasattr(layers[ix], 'kernel_initializer') and \
+                        hasattr(layers[ix], 'bias_initializer'):
+                    weight_initializer = layers[ix].kernel_initializer
+                    bias_initializer = layers[ix].bias_initializer
 
-        new_weights = [k_eval(glorot_uniform()(w.shape)) for w in initial_weights]
+                    old_weights, old_biases = layers[ix].get_weights()
 
-        model.set_weights(new_weights)
-                # Run the model
+                    layers[ix].set_weights([
+                        weight_initializer(shape=old_weights.shape),
+                        bias_initializer(shape=len(old_biases))])
+        # Run the model
         model, history, vacc, tacc = \
             run_keras(X_train, y_train, X_val, y_val, None, None, layers, epochs, split=split, verbose=verbose)
         val_acc += vacc if vacc else 0
@@ -511,3 +555,35 @@ if __name__ == "__main__":
     #     return X@Wn + Wb
     #
     # print(dotproduct(X, Wn, Wb))
+
+    ###PROBLEM 5
+    #5B
+    # train, validation = get_MNIST_data()
+    # print(train[0][0].shape)
+    # print(validation[0][0].shape)
+    # run_keras_fc_mnist(train, validation, archs_for_fc_MNIST()[0], 1, split=0.1, verbose=False, trials=5)
+
+    ## From 5D-5J
+    # train = train[0] / 255, train[1]
+    # validation = validation[0] / 255, validation[1]
+
+    #5D
+    # run_keras_fc_mnist(train, validation, archs_for_fc_MNIST()[0], 1, split=0.1, verbose=False, trials=5)
+    #5F
+    # for i in range(5, 20, 5):
+    #     run_keras_fc_mnist(train, validation, archs_for_fc_MNIST()[0], i, split=0.1, verbose=False, trials=5)
+    #5H
+    # j = 64
+    # for i in range(4):
+    #     j *= 2
+    #     print(j)
+    #     run_keras_fc_mnist(train, validation, archs_for_fc_MNIST(unit = j)[1], 1, split=0.1, verbose=False, trials=5)
+    #5I
+    # run_keras_fc_mnist(train, validation, archs_for_fc_MNIST()[3], 1, split=0.1, verbose=False, trials=5)
+    ##5J
+    # run_keras_cnn_mnist(train, validation, archs_for_cnn_MNIST()[0], 1, split=0.1, verbose=True, trials=5)
+    #5K
+    train_20, validation_20 = get_MNIST_data(shift=20)
+    run_keras_fc_mnist(train_20, validation_20, archs_for_fc_MNIST()[-1], 1, split=0.1, verbose=True, trials=1)
+    run_keras_cnn_mnist(train_20, validation_20, archs_for_cnn_MNIST()[-1], 1, split=0.1, verbose=True, trials=1)
+
