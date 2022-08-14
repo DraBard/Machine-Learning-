@@ -19,7 +19,7 @@ def init(X: np.ndarray, K: int,
 
     Args:
         X: (n, d) array holding the data
-        K: number of components
+        K: number of components (clusters)
         seed: random seed
 
     Returns:
@@ -32,7 +32,7 @@ def init(X: np.ndarray, K: int,
     n, _ = X.shape
     p = np.ones(K) / K
 
-    # select K random points as initial means
+    # select K random points from X as initial means
     mu = X[np.random.choice(n, K, replace=False)]
     var = np.zeros(K)
     # Compute variance

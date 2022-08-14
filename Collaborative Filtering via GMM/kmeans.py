@@ -14,7 +14,8 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> np.ndarray:
 
     Returns:
         np.ndarray: (n, K) array holding the soft counts
-            for all components for all examples
+            for all components for all examples Distance
+            of each user (n) to each cluster (K).
 
         """
     n, _ = X.shape

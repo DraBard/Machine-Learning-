@@ -33,15 +33,15 @@ def KMeans_plot():
 
             common.plot(X, Kmeans_mixture, Kmeans_post, "KMeans")
 
-# print(KMeans_plot())
+# KMeans_plot()
 
 ###TASK 3
 
-# print(naive_em.estep(X, common.init(X, 3, 0)[0]))
+print(naive_em.estep(X, common.init(X, 2, 0)[0]))
 # print(naive_em.mstep(X, naive_em.estep(X, common.init(X, 3, 0)[0])[0]))
 # print(naive_em.run(X, common.init(X, 3, 0)[0], naive_em.estep(X, common.init(X, 3, 0)[0])))
 
-# print(naive_em.run(X, common.init(X, 3, 0)[0], 0))
+print(naive_em.run(X, common.init(X, 2, 0)[0], common.init(X, 3, 3)[1]))
 
 
 ###TASK 4
@@ -61,9 +61,9 @@ def GMM_plot():
         for k in range(1, 5):
             mixture = naive_em.run(X, common.init(X, k, s)[0], common.init(X, k, s)[1])[0]
             post = naive_em.run(X, common.init(X, k, s)[0], common.init(X, k, s)[1])[1]
-            common.plot(X, mixture, post, "GMM")
+            common.plot(X, mixture, post, f"GMM, K = {k}")
 
-# print(GMM_plot())
+# GMM_plot()
 
 ##TASK 5
 
@@ -106,10 +106,10 @@ def missing_entries(X, mixture):
     return(em.fill_matrix(X, mixture))
 
 
-mixture1, post1 = common.init(x_netflix, 12, 1)
-mixture2 = em.run(x_netflix, mixture1, post1)[0]
-X_new = missing_entries(x_netflix, mixture2)
-print(common.rmse(X_new, x_netflix_gold))
+# mixture1, post1 = common.init(x_netflix, 12, 1)
+# mixture2 = em.run(x_netflix, mixture1, post1)[0]
+# X_new = missing_entries(x_netflix, mixture2)
+# print(common.rmse(X_new, x_netflix_gold))
 
 # def missing_entries1(X, mixture):
 #
